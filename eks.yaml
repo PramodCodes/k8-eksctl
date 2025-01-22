@@ -1,0 +1,31 @@
+# A simple example of ClusterConfig object:
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: roboshop
+  region: eu-east-1
+
+# if we provide this we need to manage it, It has managed nodegroups
+# nodeGroups:
+#   - name: ng-1
+#     instanceType: m5.large
+#     desiredCapacity: 1
+
+managedNodeGroups:
+  - name: spot
+    instanceType: m5.large
+    desiredCapacity: 3
+    spot: true
+  
+    volumeSize: 10
+    volumeType: gp2
+
+
+cloudWatch:
+    clusterLogging:
+        # enable specific types of cluster control plane logs
+        enableTypes: ["audit", "authenticator", "controllerManager"]
+        # all supported types: "api", "audit", "authenticator", "controllerManager", "scheduler"
+        # supported special values: "*" and "all"
