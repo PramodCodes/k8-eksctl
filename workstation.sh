@@ -78,3 +78,29 @@ tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
 sudo mv /tmp/eksctl /usr/local/bin
 
 echo "eksctl installed"
+
+echo "Installing Metrics server"
+cd ~
+cd k8-eksctl\
+kubectl apply -f metrics_components.yaml
+
+
+echo "Metrics server installed"
+
+echo "csi-driver"
+kubectl kustomize \
+    "github.com/kubernetes-sigs/aws-efs-csi-driver/deploy/kubernetes/overlays/stable/ecr/?ref=release-2.1" > private-ecr-driver.yaml
+kubectl get pod -n kube-system -l "app.kubernetes.io/name=aws-ebs-csi-driver,app.kubernetes.io/instance=aws-ebs-csi-driver"
+echo "helm"
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+echo "kubens"
+sudo git clone https://github.com/ahmetb/kubectx /opt/kubectx
+sudo ln -s /opt/kubectx/kubectx /usr/local/bin/kubectx
+sudo ln -s /opt/kubectx/kubens /usr/local/bin/kubens
+echo "kubns installed set namespace with kubens namespace"
+echo "k9s"
+curl -sS https://webinstall.dev/k9s | bash
+
+echo "Bootstrapping complete"
